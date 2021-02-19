@@ -21,7 +21,7 @@ setup_http_api() ->
     HttpAcceptors = rclref_config:http_acceptors(),
     HttpMaxConnections = rclref_config:http_max_connections(),
 
-    logger:info("Starting HTTP API at port ~p", [HttpPort]),
+    logger:debug("Starting HTTP API at port ~p", [HttpPort]),
 
     {ok, _} =
         cowboy:start_clear(rclref_http_listener,

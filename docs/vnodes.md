@@ -226,21 +226,21 @@ handle_handoff_command(Message, _Sender, State) ->
     {noreply, State}.
 
 handoff_starting(TargetNode, State = #state{partition = Partition}) ->
-    logger:info("handoff starting ~p: ~p", [Partition, TargetNode]),
+    logger:debug("handoff starting ~p: ~p", [Partition, TargetNode]),
     {true, State}.
 
 handoff_cancelled(State = #state{partition = Partition}) ->
-    logger:info("handoff cancelled ~p", [Partition]),
+    logger:debug("handoff cancelled ~p", [Partition]),
     {ok, State}.
 
 handoff_finished(TargetNode, State = #state{partition = Partition}) ->
-    logger:info("handoff finished ~p: ~p", [Partition, TargetNode]),
+    logger:debug("handoff finished ~p: ~p", [Partition, TargetNode]),
     {ok, State}.
 
 handle_handoff_data(BinData,
                     State0 = #state{partition = Partition, mod = Mod, modstate = ModState0}) ->
     {Key, Content} = binary_to_term(BinData),
-    logger:info("handoff data received ~p: ~p", [Partition, Key]),
+    logger:debug("handoff data received ~p: ~p", [Partition, Key]),
     {ok, ModState1} = Mod:put(Key, Content, ModState0),
     State1 = State0#state{modstate = ModState1},
     {reply, ok, State1}.
@@ -257,10 +257,10 @@ handle_overload_info(_, _Idx) ->
 is_empty(State = #state{mod = Mod, modstate = ModState}) ->
     case Mod:is_empty(ModState) of
       true ->
-          logger:info("is_empty: ~p", [true]),
+          logger:debug("is_empty: ~p", [true]),
           {true, State};
       false ->
-          logger:info("is_empty: ~p", [false]),
+          logger:debug("is_empty: ~p", [false]),
           {false, State};
       Other ->
           logger:error("is_empty error reason :~p", [Other]),
@@ -268,7 +268,7 @@ is_empty(State = #state{mod = Mod, modstate = ModState}) ->
     end.
 
 delete(State0 = #state{partition = Partition, mod = Mod, modstate = ModState0}) ->
-    logger:info("delete partition: ~p", [Partition]),
+    logger:debug("delete partition: ~p", [Partition]),
     {ok, ModState1} = Mod:drop(ModState0),
     ok = Mod:stop(ModState1),
     State1 = State0#state{modstate = ModState1},

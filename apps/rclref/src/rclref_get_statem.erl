@@ -43,7 +43,7 @@ result_of_get(Pid, Result) ->
 
 % Callbacks
 init([ReqId, ClientPid, ClientNode, Key, Options]) ->
-    logger:info("Initializing GetStatem, Pid:~p", [self()]),
+    logger:debug("Initializing GetStatem, Pid:~p", [self()]),
     DocIdx = riak_core_util:chash_key({Key, undefined}),
 
     TimeoutGet = proplists:get_value(timeout, Options, ?TIMEOUT_GET),
@@ -74,7 +74,7 @@ code_change(_Vsn, StateName, State, _Extra) ->
     {ok, StateName, State}.
 
 terminate(Reason, _StateName, _State) ->
-    logger:info("Terminating GetStatem, Pid:~p, Reason:~p", [self(), Reason]),
+    logger:debug("Terminating GetStatem, Pid:~p, Reason:~p", [self(), Reason]),
     ok.
 
 % WAITING STATE will wait for R vnodes to return {ok, RObj} whose values are not undefined
@@ -257,7 +257,7 @@ repair(RObj, N, RObjs) ->
     lists:foreach(fun ({IndexNode, _}) ->
                           case lists:member(IndexNode, OkNodesIndexes) of
                             false ->
-                                logger:info("Sending repair RObj: ~p to IndexNode: ~p",
+                                logger:debug("Sending repair RObj: ~p to IndexNode: ~p",
                                             [RObj, IndexNode]),
                                 riak_core_vnode_master:command(IndexNode,
                                                                {repair_request, RObj},

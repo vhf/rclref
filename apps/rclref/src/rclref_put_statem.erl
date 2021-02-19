@@ -42,7 +42,7 @@ result_of_put(Pid, Result) ->
 
 % Callbacks
 init([ReqId, ClientPid, ClientNode, RObj, Options]) ->
-    logger:info("Initializing PutStatem, Pid:~p", [self()]),
+    logger:debug("Initializing PutStatem, Pid:~p", [self()]),
     Key = rclref_object:key(RObj),
     DocIdx = riak_core_util:chash_key({Key, undefined}),
 
@@ -75,7 +75,7 @@ code_change(_Vsn, StateName, State, _Extra) ->
     {ok, StateName, State}.
 
 terminate(Reason, _StateName, _State) ->
-    logger:info("Terminating PutStatem, Pid:~p, Reason:~p", [self(), Reason]),
+    logger:debug("Terminating PutStatem, Pid:~p, Reason:~p", [self(), Reason]),
     ok.
 
 % State function

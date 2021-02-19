@@ -50,7 +50,7 @@ join_new_nodes(Nodes) ->
 
 -spec plan_and_commit([node()]) -> ok.
 plan_and_commit([]) ->
-    logger:info("No new nodes added to the ring of ~p", [node()]);
+    logger:debug("No new nodes added to the ring of ~p", [node()]);
 plan_and_commit(NewNodeMembers) ->
     % check if node is reachable
     [pong = net_adm:ping(Node) || Node <- NewNodeMembers],
