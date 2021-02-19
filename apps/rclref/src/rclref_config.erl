@@ -4,7 +4,7 @@
 
 -export([storage_backend/0, merge_strategy/0, n_val/0, r_val/0, w_val/0, timeout_put/0,
          timeout_get/0, timeout_coverage/0, http_port/0, http_acceptors/0,
-         http_max_connections/0]).
+         http_max_connections/0, disable_http/0]).
 
 -spec storage_backend() -> ets | dets | other.
 storage_backend() ->
@@ -106,3 +106,8 @@ http_acceptors() ->
 http_max_connections() ->
     HttpMaxConnections = application:get_env(rclref, http_max_connections, infinity),
     HttpMaxConnections.
+
+
+-spec disable_http() -> boolean().
+disable_http() ->
+    application:get_env(rclref, disable_http, false).

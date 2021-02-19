@@ -24,18 +24,22 @@ stop(_State) ->
     ok.
 
 setup_http_api() ->
-    Dispatch = cowboy_router:compile([{'_', [{"/rclref/:key", rclref_http_handler, []}]}]),
-    HttpPort = rclref_config:http_port(),
-    HttpAcceptors = rclref_config:http_acceptors(),
-    HttpMaxConnections = rclref_config:http_max_connections(),
+    case rclref_config:disable_http() of
+        true ->
+            ok;
+        _ ->
+            Dispatch = cowboy_router:compile([{'_', [{"/rclref/:key", rclref_http_handler, []}]}]),
+            HttpPort = rclref_config:http_port(),
+            HttpAcceptors = rclref_config:http_acceptors(),
+            HttpMaxConnections = rclref_config:http_max_connections(),
 
-    logger:debug("Starting HTTP API at port ~p", [HttpPort]),
+            logger:debug("Starting HTTP API at port ~p", [HttpPort]),
 
-    {ok, _} =
-        cowboy:start_clear(rclref_http_listener,
-                           [{port, HttpPort},
-                            {num_acceptors, HttpAcceptors},
-                            {max_connections, HttpMaxConnections}],
-                           #{env => #{dispatch => Dispatch}}),
-
+            {ok, _} =
+                cowboy:start_clear(rclref_http_listener,
+                                [{port, HttpPort},
+                                    {num_acceptors, HttpAcceptors},
+                                    {max_connections, HttpMaxConnections}],
+                                #{env => #{dispatch => Dispatch}})
+    end,
     ok.
